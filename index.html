@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07111f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>SENTINEL | سِنْتِنِل</title>
+
+<style>
+:root{
+  --bg:#050b14;
+  --panel:#0b1626;
+  --panel2:#101f33;
+  --line:rgba(255,255,255,.09);
+  --text:#f4f7fb;
+  --muted:#91a2b8;
+  --accent:#55d6ff;
+  --green:#36e0a1;
+  --yellow:#ffd166;
+  --orange:#ff9f43;
+  --red:#ff5573;
+  --shadow:0 20px 60px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+ margin:0;
+ background:
+ radial-gradient(circle at 80% -10%,rgba(85,214,255,.14),transparent 30%),
+ radial-gradient(circle at 0% 30%,rgba(54,224,161,.08),transparent 28%),
+ var(--bg);
+ color:var(--text);
+ font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Arial,sans-serif;
+ min-height:100vh;
+}
+button{font:inherit}
+.container{width:min(1180px,92%);margin:auto}
+header{
+ position:sticky;top:0;z-index:20;
+ backdrop-filter:blur(20px);
+ background:rgba(5,11,20,.78);
+ border-bottom:1px solid var(--line);
+}
+.nav{
+ min-height:72px;display:flex;align-items:center;justify-content:space-between;
+ gap:15px;
+}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{
+ width:43px;height:43px;border-radius:13px;
+ display:grid;place-items:center;
+ background:linear-gradient(135deg,var(--accent),#4267ff);
+ color:#04101b;font-weight:900;font-size:19px;
+ box-shadow:0 0 30px rgba(85,214,255,.25);
+}
+.brand strong{font-size:20px;letter-spacing:1px}
+.brand small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.lang{
+ border:1px solid var(--line);background:var(--panel);
+ color:white;border-radius:12px;padding:10px 15px;
+ cursor:pointer;
+}
+main{padding:35px 0 80px}
+.hero{
+ display:grid;grid-template-columns:1.3fr .7fr;gap:22px;
+ align-items:stretch;margin-bottom:22px;
+}
+.heroText,.statusBox,.panel,.sensor,.event,.scenario{
+ background:linear-gradient(145deg,rgba(16,31,51,.92),rgba(8,18,31,.92));
+ border:1px solid var(--line);
+ box-shadow:var(--shadow);
+ border-radius:24px;
+}
+.heroText{padding:34px}
+.badge{
+ display:inline-flex;gap:7px;align-items:center;
+ padding:7px 11px;border-radius:999px;
+ background:rgba(85,214,255,.09);
+ border:1px solid rgba(85,214,255,.18);
+ color:var(--accent);font-size:12px;font-weight:700;
+}
+h1{font-size:clamp(42px,7vw,76px);line-height:.95;margin:20px 0 14px}
+.gradient{
+ background:linear-gradient(90deg,#fff,var(--accent),var(--green));
+ -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.heroText p{color:var(--muted);font-size:17px;line-height:1.8;max-width:700px}
+.start{
+ margin-top:18px;padding:14px 22px;border:0;border-radius:14px;
+ background:linear-gradient(90deg,var(--accent),#6385ff);
+ color:#03101a;font-weight:900;cursor:pointer;
+}
+.statusBox{padding:25px;display:flex;flex-direction:column;justify-content:center}
+.statusTitle{color:var(--muted);font-size:13px}
+.status{
+ display:flex;align-items:center;gap:12px;margin:15px 0;
+}
+.dot{width:13px;height:13px;border-radius:50%;background:var(--green);box-shadow:0 0 18px var(--green)}
+.status h2{margin:0;font-size:25px}
+.bigRisk{
+ font-size:64px;font-weight:900;line-height:1;
+ margin:10px 0;
+}
+.riskLabel{color:var(--muted)}
+.grid{
+ display:grid;grid-template-columns:repeat(4,1fr);gap:14px;
+ margin-bottom:22px;
+}
+.sensor{padding:19px;position:relative;overflow:hidden}
+.sensor:after{
+ content:"";position:absolute;width:80px;height:80px;border-radius:50%;
+ background:rgba(85,214,255,.07);right:-25px;bottom:-30px;
+}
+.sensorTop{display:flex;justify-content:space-between;color:var(--muted);font-size:12px}
+.sensorIcon{font-size:21px}
+.value{font-size:31px;font-weight:850;margin:10px 0 4px}
+.unit{font-size:12px;color:var(--muted)}
+.bar{height:5px;background:#17263a;border-radius:20px;margin-top:15px;overflow:hidden}
+.bar i{display:block;height:100%;width:0%;background:var(--accent);border-radius:20px;transition:.5s}
+.layout{display:grid;grid-template-columns:1.35fr .65fr;gap:18px}
+.panel{padding:23px;margin-bottom:18px}
+.panelHead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+.panel h3{margin:0;font-size:18px}
+.live{
+ color:var(--green);font-size:11px;display:flex;align-items:center;gap:6px
+}
+.live:before{
+ content:"";width:7px;height:7px;background:var(--green);border-radius:50%;
+ box-shadow:0 0 10px var(--green);
+ animation:pulse 1.2s infinite;
+}
+@keyframes pulse{50%{opacity:.3;transform:scale(.7)}}
+canvas{width:100%;height:250px;display:block}
+.alert{
+ padding:18px;border-radius:18px;
+ border:1px solid rgba(54,224,161,.2);
+ background:rgba(54,224,161,.06);
+}
+.alert strong{display:block;margin-bottom:7px}
+.alert p{margin:0;color:var(--muted);font-size:13px;line-height:1.7}
+.eventList{display:flex;flex-direction:column;gap:10px}
+.event{
+ padding:14px 15px;box-shadow:none;border-radius:15px;
+ display:flex;gap:11px;align-items:flex-start;
+}
+.eventIcon{font-size:19px}
+.event small{display:block;color:var(--muted);margin-top:4px}
+.scenarios{
+ display:grid;grid-template-columns:repeat(4,1fr);gap:12px
+}
+.scenario{
+ cursor:pointer;padding:17px;transition:.2s;
+}
+.scenario:hover{transform:translateY(-2px);border-color:rgba(85,214,255,.3)}
+.scenario span{font-size:25px}
+.scenario strong{display:block;margin-top:10px}
+.scenario small{color:var(--muted);display:block;margin-top:5px}
+.controls{display:flex;gap:9px;flex-wrap:wrap}
+.control{
+ padding:10px 13px;border-radius:11px;
+ background:#111f32;color:white;border:1px solid var(--line);cursor:pointer;
+}
+footer{text-align:center;color:#687b91;font-size:11px;margin-top:35px;line-height:1.8}
+.modal{
+ position:fixed;inset:0;background:rgba(0,0,0,.7);
+ backdrop-filter:blur(12px);display:none;place-items:center;
+ z-index:100;padding:20px;
+}
+.modalBox{
+ width:min(520px,100%);background:#0b1626;border:1px solid var(--line);
+ border-radius:25px;padding:25px;
+}
+.modalBox h2{margin-top:0}
+.close{
+ float:left;border:0;background:#18273a;color:white;
+ width:36px;height:36px;border-radius:50%;cursor:pointer;
+}
+.progress{
+ height:8px;background:#17263a;border-radius:20px;overflow:hidden;margin:18px 0;
+}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--green));width:0}
+.radar{
+ width:190px;height:190px;border-radius:50%;margin:20px auto;
+ border:1px solid rgba(85,214,255,.35);
+ background:
+ repeating-radial-gradient(circle,transparent 0 28px,rgba(85,214,255,.14) 29px 30px),
+ linear-gradient(90deg,transparent 49.5%,rgba(85,214,255,.15) 50%,transparent 50.5%),
+ linear-gradient(0deg,transparent 49.5%,rgba(85,214,255,.15) 50%,transparent 50.5%);
+ position:relative;overflow:hidden;
+}
+.radar:after{
+ content:"";position:absolute;width:50%;height:2px;top:50%;left:50%;
+ transform-origin:left center;
+ background:linear-gradient(90deg,var(--green),transparent);
+ animation:scan 2s linear infinite;
+}
+@keyframes scan{to{transform:rotate(360deg)}}
+@media(max-width:850px){
+ .hero,.layout{grid-template-columns:1fr}
+ .grid{grid-template-columns:repeat(2,1fr)}
+ .scenarios{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+ .heroText{padding:25px}
+ .grid{gap:9px}
+ .sensor{padding:14px}
+ .value{font-size:25px}
+ .bigRisk{font-size:53px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="container nav">
+ <div class="brand">
+  <div class="logo">S</div>
+  <div>
+   <strong>SENTINEL</strong>
+   <small id="brandSub">نظام ذكي للتنبؤ بالمخاطر</small>
+  </div>
+ </div>
+ <button class="lang" onclick="toggleLanguage()" id="langBtn">English</button>
+</div>
+</header>
+
+<main class="container">
+
+<section class="hero">
+ <div class="heroText">
+  <span class="badge">● <span id="country">SAUDI ARABIA • RESEARCH PROTOTYPE</span></span>
+  <h1><span id="heroSmall">نكتشف</span><br><span class="gradient" id="heroBig">الخطر قبل أن يكبر.</span></h1>
+  <p id="heroDesc">
+   منصة بحثية تحلل عدة مؤشرات بيئية في الوقت نفسه وتحوّل التغيرات غير الطبيعية إلى درجة خطر قابلة للقياس.
+   هذه الواجهة تستخدم بيانات محاكاة في هذه النسخة التجريبية.
+  </p>
+  <button class="start" onclick="startMonitoring()" id="startBtn">▶ بدء المراقبة الذكية</button>
+ </div>
+
+ <div class="statusBox">
+  <div class="statusTitle" id="overallTitle">الحالة العامة للنظام</div>
+  <div class="status">
+   <span class="dot" id="statusDot"></span>
+   <h2 id="statusText">مستقر</h2>
+  </div>
+  <div class="bigRisk" id="riskNumber">8</div>
+  <div class="riskLabel" id="riskWord">درجة الخطر / 100</div>
+ </div>
+</section>
+
+<div class="grid">
+
+ <div class="sensor">
+  <div class="sensorTop"><span id="tTemp">درجة الحرارة</span><span class="sensorIcon">🌡️</span></div>
+  <div class="value"><span id="temp">24.0</span>°</div>
+  <div class="unit">°C</div>
+  <div class="bar"><i id="tempBar"></i></div>
+ </div>
+
+ <div class="sensor">
+  <div class="sensorTop"><span id="tAir">جودة الهواء</span><span class="sensorIcon">💨</span></div>
+  <div class="value"><span id="air">82</span>%</div>
+  <div class="unit" id="airUnit">مؤشر جودة الهواء</div>
+  <div class="bar"><i id="airBar"></i></div>
+ </div>
+
+ <div class="sensor">
+  <div class="sensorTop"><span id="tNoise">الضوضاء</span><span class="sensorIcon">🔊</span></div>
+  <div class="value"><span id="noise">31</span></div>
+  <div class="unit">dB</div>
+  <div class="bar"><i id="noiseBar"></i></div>
+ </div>
+
+ <div class="sensor">
+  <div class="sensorTop"><span id="tCrowd">الكثافة</span><span class="sensorIcon">👥</span></div>
+  <div class="value"><span id="crowd">18</span>%</div>
+  <div class="unit" id="crowdUnit">كثافة المكان</div>
+  <div class="bar"><i id="crowdBar"></i></div>
+ </div>
+
+</div>
+
+<div class="layout">
+
+ <div>
+
+  <section class="panel">
+   <div class="panelHead">
+    <h3 id="chartTitle">المراقبة اللحظية</h3>
+    <span class="live" id="liveText">LIVE</span>
+   </div>
+   <canvas id="chart"></canvas>
+  </section>
+
+  <section class="panel">
+   <div class="panelHead">
+    <h3 id="scenarioTitle">اختبر النظام</h3>
+    <div class="controls">
+     <button class="control" onclick="resetSystem()" id="resetBtn">↺ إعادة</button>
+    </div>
+   </div>
+
+   <div class="scenarios">
+    <div class="scenario" onclick="runScenario('normal')">
+     <span>🟢</span>
+     <strong id="sNormal">الوضع الطبيعي</strong>
+     <small id="sNormalD">بيانات مستقرة</small>
+    </div>
+
+    <div class="scenario" onclick="runScenario('heat')">
+     <span>🌡️</span>
+     <strong id="sHeat">ارتفاع حرارة</strong>
+     <small id="sHeatD">محاكاة تغير حراري</small>
+    </div>
+
+    <div class="scenario" onclick="runScenario('air')">
+     <span>💨</span>
+     <strong id="sAir">تدهور الهواء</strong>
+     <small id="sAirD">محاكاة تغير بيئي</small>
+    </div>
+
+    <div class="scenario" onclick="runScenario('compound')">
+     <span>🔴</span>
+     <strong id="sCompound">خطر مركب</strong>
+     <small id="sCompoundD">عدة مؤشرات تتغير</small>
+    </div>
+   </div>
+  </section>
+
+ </div>
+
+ <div>
+
+  <section class="panel">
+   <div class="panelHead">
+    <h3 id="analysisTitle">التحليل</h3>
+   </div>
+
+   <div class="alert" id="analysisBox">
+    <strong id="analysisHead">✓ لا يوجد نمط خطير</strong>
+    <p id="analysisText">
+     النظام يراقب العلاقة بين المؤشرات بدل الاعتماد على مؤشر واحد فقط.
+    </p>
+   </div>
+
+   <div class="radar"></div>
+  </section>
+
+  <section class="panel">
+   <div class="panelHead">
+    <h3 id="eventsTitle">سجل الأحداث</h3>
+   </div>
+   <div class="eventList" id="events"></div>
+  </section>
+
+ </div>
+</div>
+
+<footer>
+ <span id="footer1">SENTINEL — Research Prototype</span><br>
+ <span id="footer2">هذه محاكاة بحثية وليست نظام إنذار أمني أو طبي معتمد.</span>
+</footer>
+
+</main>
+
+<div class="modal" id="modal">
+ <div class="modalBox">
+  <button class="close" onclick="closeModal()">×</button>
+  <h2 id="modalTitle">تحليل النظام</h2>
+  <div id="modalContent"></div>
+ </div>
+</div>
+
+<script>
+/* =========================
+   SENTINEL CORE
+   ========================= */
+
+let lang="ar";
+let monitoring=false;
+let timer=null;
+let scenario="normal";
+
+let data={
+ temp:24,
+ air:82,
+ noise:31,
+ crowd:18
+};
+
+let history=[];
+const MAX_HISTORY=34;
+
+/* -------------------------
+   LANGUAGE
+------------------------- */
+
+const T={
+ ar:{
+  brandSub:"نظام ذكي للتنبؤ بالمخاطر",
+  lang:"English",
+  country:"SAUDI ARABIA • RESEARCH PROTOTYPE",
+  heroSmall:"نكتشف",
+  heroBig:"الخطر قبل أن يكبر.",
+  heroDesc:"منصة بحثية تحلل عدة مؤشرات بيئية في الوقت نفسه وتحوّل التغيرات غير الطبيعية إلى درجة خطر قابلة للقياس. هذه الواجهة تستخدم بيانات محاكاة في هذه النسخة التجريبية.",
+  start:"▶ بدء المراقبة الذكية",
+  stop:"■ إيقاف المراقبة",
+  overall:"الحالة العامة للنظام",
+  stable:"مستقر",
+  caution:"انتباه",
+  high:"خطر مرتفع",
+  critical:"خطر شديد",
+  risk:"درجة الخطر / 100",
+  temp:"درجة الحرارة",
+  air:"جودة الهواء",
+  noise:"الضوضاء",
+  crowd:"الكثافة",
+  airUnit:"مؤشر جودة الهواء",
+  crowdUnit:"كثافة المكان",
+  chart:"المراقبة اللحظية",
+  scenario:"اختبر النظام",
+  reset:"↺ إعادة",
+  normal:"الوضع الطبيعي",
+  normalD:"بيانات مستقرة",
+  heat:"ارتفاع حرارة",
+  heatD:"محاكاة تغير حراري",
+  airS:"تدهور الهواء",
+  airD:"محاكاة تغير بيئي",
+  compound:"خطر مركب",
+  compoundD:"عدة مؤشرات تتغير",
+  analysis:"التحليل",
+  noDanger:"✓ لا يوجد نمط خطير",
+  noDangerText:"النظام يراقب العلاقة بين المؤشرات بدل الاعتماد على مؤشر واحد فقط.",
+  detected:"⚠ نمط غير طبيعي مكتشف",
+  detectedText:"عدة مؤشرات تتحرك بعيدًا عن خط الأساس. هذا نموذج بحثي لاختبار قدرة الخوارزمية على اكتشاف التغير المبكر.",
+  events:"سجل الأحداث",
+  footer1:"SENTINEL — Research Prototype",
+  footer2:"هذه محاكاة بحثية وليست نظام إنذار أمني أو طبي معتمد.",
+  startEvent:"بدأت المراقبة الذكية",
+  stopEvent:"تم إيقاف المراقبة",
+  normalEvent:"البيانات ضمن النطاق الطبيعي",
+  anomaly:"تم اكتشاف تغير غير طبيعي",
+  scenarioEvent:"تم تشغيل سيناريو اختباري",
+  systemAnalysis:"تحليل النظام",
+  analyzing:"يتم تحليل المؤشرات...",
+  result:"نتيجة التحليل",
+  riskDetected:"تم اكتشاف ارتفاع في درجة الخطر.",
+  confidence:"ثقة النموذج التجريبي",
+  explanation:"الدرجة ناتجة عن دمج عدة مؤشرات مع مقدار تغيرها عن خط الأساس. في البحث الحقيقي سيتم تدريب واختبار النموذج على بيانات تجريبية حقيقية."
+ },
+ en:{
+  brandSub:"Intelligent Hazard Prediction System",
+  lang:"العربية",
+  country:"SAUDI ARABIA • RESEARCH PROTOTYPE",
+  heroSmall:"Detect",
+  heroBig:"risk before it grows.",
+  heroDesc:"A research platform that analyzes multiple environmental signals simultaneously and converts abnormal changes into a measurable risk score. This version uses simulated sensor data.",
+  start:"▶ Start Intelligent Monitoring",
+  stop:"■ Stop Monitoring",
+  overall:"System Status",
+  stable:"Stable",
+  caution:"Caution",
+  high:"High Risk",
+  critical:"Critical",
+  risk:"Risk Score / 100",
+  temp:"Temperature",
+  air:"Air Quality",
+  noise:"Noise",
+  crowd:"Density",
+  airUnit:"Air quality index",
+  crowdUnit:"Location density",
+  chart:"Real-Time Monitoring",
+  scenario:"Test the System",
+  reset:"↺ Reset",
+  normal:"Normal",
+  normalD:"Stable signals",
+  heat:"Heat Rise",
+  heatD:"Thermal change simulation",
+  airS:"Air Degradation",
+  airD:"Environmental change simulation",
+  compound:"Compound Risk",
+  compoundD:"Multiple signals changing",
+  analysis:"Analysis",
+  noDanger:"✓ No dangerous pattern",
+  noDangerText:"The system evaluates relationships between signals instead of relying on a single measurement.",
+  detected:"⚠ Abnormal pattern detected",
+  detectedText:"Multiple signals are moving away from baseline. This is a research model for testing early-change detection.",
+  events:"Event Log",
+  footer1:"SENTINEL — Research Prototype",
+  footer2:"Research simulation only. Not a certified safety or medical warning system.",
+  startEvent:"Intelligent monitoring started",
+  stopEvent:"Monitoring stopped",
+  normalEvent:"Signals are within normal range",
+  anomaly:"Abnormal change detected",
+  scenarioEvent:"Test scenario activated",
+  systemAnalysis:"System Analysis",
+  analyzing:"Analyzing signals...",
+  result:"Analysis Result",
+  riskDetected:"An increase in risk level was detected.",
+  confidence:"Experimental model confidence",
+  explanation:"The score combines multiple signals and their deviation from baseline. The research version will be trained and tested using real experimental data."
+ }
+};
+
+function tr(key){
+ return T[lang][key]||key;
+}
+
+function applyLanguage(){
+ document.documentElement.lang=lang;
+ document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+
+ document.getElementById("brandSub").textContent=tr("brandSub");
+ document.getElementById("langBtn").textContent=tr("lang");
+ document.getElementById("country").textContent=tr("country");
+ document.getElementById("heroSmall").textContent=tr("heroSmall");
+ document.getElementById("heroBig").textContent=tr("heroBig");
+ document.getElementById("heroDesc").textContent=tr("heroDesc");
+ document.getElementById("startBtn").textContent=monitoring?tr("stop"):tr("start");
+
+ document.getElementById("overallTitle").textContent=tr("overall");
+ document.getElementById("riskWord").textContent=tr("risk");
+
+ document.getElementById("tTemp").textContent=tr("temp");
+ document.getElementById("tAir").textContent=tr("air");
+ document.getElementById("tNoise").textContent=tr("noise");
+ document.getElementById("tCrowd").textContent=tr("crowd");
+ document.getElementById("airUnit").textContent=tr("airUnit");
+ document.getElementById("crowdUnit").textContent=tr("crowdUnit");
+
+ document.getElementById("chartTitle").textContent=tr("chart");
+ document.getElementById("scenarioTitle").textContent=tr("scenario");
+ document.getElementById("resetBtn").textContent=tr("reset");
+
+ document.getElementById("sNormal").textContent=tr("normal");
+ document.getElementById("sNormalD").textContent=tr("normalD");
+ document.getElementById("sHeat").textContent=tr("heat");
+ document.getElementById("sHeatD").textContent=tr("heatD");
+ document.getElementById("sAir").textContent=tr("airS");
+ document.getElementById("sAirD").textContent=tr("airD");
+ document.getElementById("sCompound").textContent=tr("compound");
+ document.getElementById("sCompoundD").textContent=tr("compoundD");
+
+ document.getElementById("analysisTitle").textContent=tr("analysis");
+ document.getElementById("eventsTitle").textContent=tr("events");
+ document.getElementById("footer1").textContent=tr("footer1");
+ document.getElementById("footer2").textContent=tr("footer2");
+
+ updateAnalysis();
+ renderEvents();
+}
+
+function toggleLanguage(){
+ lang=lang==="ar"?"en":"ar";
+ applyLanguage();
+}
+
+/* -------------------------
+   RISK ENGINE
+------------------------- */
+
+function clamp(x,a,b){
+ return Math.max(a,Math.min(b,x));
+}
+
+function calculateRisk(){
+ /*
+  Research prototype:
+  Each signal receives a normalized deviation.
+  The compound component increases the score when
+  several signals are abnormal simultaneously.
+ */
+
+ let tempRisk=clamp((data.temp-24)/18*100,0,100);
+ let airRisk=clamp((60-data.air)/60*100,0,100);
+ let noiseRisk=clamp((data.noise-35)/70*100,0,100);
+ let crowdRisk=clamp((data.crowd-30)/70*100,0,100);
+
+ let values=[tempRisk,airRisk,noiseRisk,crowdRisk];
+ let abnormal=values.filter(v=>v>35).length;
+
+ let base=
+  tempRisk*.28+
+  airRisk*.27+
+  noiseRisk*.18+
+  crowdRisk*.17;
+
+ let compound=abnormal>=2 ? 10+(abnormal*4) : 0;
+
+ return Math.round(clamp(base+compound,0,100));
+}
+
+/* -------------------------
+   SENSOR SIMULATION
+------------------------- */
+
+function simulate(){
+ if(scenario==="normal"){
+  data.temp += (24-data.temp)*.08 + (Math.random()-.5)*.35;
+  data.air += (82-data.air)*.08 + (Math.random()-.5)*1.2;
+  data.noise += (31-data.noise)*.08 + (Math.random()-.5)*2;
+  data.crowd += (18-data.crowd)*.08 + (Math.random()-.5)*1.5;
+ }
+
+ if(scenario==="heat"){
+  data.temp += .55 + Math.random()*.35;
+  data.air -= .20 + Math.random()*.25;
+  data.noise += (Math.random()-.5)*2;
+  data.crowd += (Math.random()-.5)*1;
+ }
+
+ if(scenario==="air"){
+  data.temp += (Math.random()-.5)*.5;
+  data.air -= .9 + Math.random()*.8;
+  data.noise += .3;
+  data.crowd += (Math.random()-.5)*1;
+ }
+
+ if(scenario==="compound"){
+  data.temp += .42 + Math.random()*.3;
+  data.air -= .75 + Math.random()*.5;
+  data.noise += .9 + Math.random()*.7;
+  data.crowd += .85 + Math.random()*.7;
+ }
+
+ data.temp=clamp(data.temp,20,48);
+ data.air=clamp(data.air,5,100);
+ data.noise=clamp(data.noise,20,110);
+ data.crowd=clamp(data.crowd,0,100);
+
+ let risk=calculateRisk();
+
+ history.push(risk);
+ if(history.length>MAX_HISTORY)history.shift();
+
+ updateUI(risk);
+ drawChart();
+}
+
+function updateUI(risk){
+
+ document.getElementById("temp").textContent=data.temp.toFixed(1);
+ document.getElementById("air").textContent=Math.round(data.air);
+ document.getElementById("noise").textContent=Math.round(data.noise);
+ document.getElementById("crowd").textContent=Math.round(data.crowd);
+
+ document.getElementById("tempBar").style.width=clamp(data.temp/50*100,0,100)+"%";
+ document.getElementById("airBar").style.width=data.air+"%";
+ document.getElementById("noiseBar").style.width=clamp(data.noise/100*100,0,100)+"%";
+ document.getElementById("crowdBar").style.width=data.crowd+"%";
+
+ document.getElementById("riskNumber").textContent=risk;
+
+ let status,word;
+
+ if(risk<25){
+  status=tr("stable");
+  word="stable";
+ }else if(risk<55){
+  status=tr("caution");
+  word="caution";
+ }else if(risk<80){
+  status=tr("high");
+  word="high";
+ }else{
+  status=tr("critical");
+  word="critical";
+ }
+
+ document.getElementById("statusText").textContent=status;
+
+ let dot=document.getElementById("statusDot");
+
+ if(word==="stable"){
+  dot.style.background="var(--green)";
+  dot.style.boxShadow="0 0 18px var(--green)";
+ }else if(word==="caution"){
+  dot.style.background="var(--yellow)";
+  dot.style.boxShadow="0 0 18px var(--yellow)";
+ }else if(word==="high"){
+  dot.style.background="var(--orange)";
+  dot.style.boxShadow="0 0 18px var(--orange)";
+ }else{
+  dot.style.background="var(--red)";
+  dot.style.boxShadow="0 0 18px var(--red)";
+ }
+
+ updateAnalysis();
+}
+
+/* -------------------------
+   ANALYSIS
+------------------------- */
+
+function updateAnalysis(){
+ let risk=calculateRisk();
+ let box=document.getElementById("analysisBox");
+
+ if(risk<35){
+  box.style.borderColor="rgba(54,224,161,.2)";
+  box.style.background="rgba(54,224,161,.06)";
+  document.getElementById("analysisHead").textContent=tr("noDanger");
+  document.getElementById("analysisText").textContent=tr("noDangerText");
+ }else{
+  box.style.borderColor="rgba(255,85,115,.25)";
+  box.style.background="rgba(255,85,115,.07)";
+  document.getElementById("analysisHead").textContent=tr("detected");
+  document.getElementById("analysisText").textContent=tr("detectedText");
+ }
+}
+
+/* -------------------------
+   CHART
+------------------------- */
+
+function drawChart(){
+
+ let canvas=document.getElementById("chart");
+ let rect=canvas.getBoundingClientRect();
+ let dpr=window.devicePixelRatio||1;
+
+ canvas.width=rect.width*dpr;
+ canvas.height=250*dpr;
+
+ let ctx=canvas.getContext("2d");
+ ctx.scale(dpr,dpr);
+
+ let w=rect.width;
+ let h=250;
+
+ ctx.clearRect(0,0,w,h);
+
+ ctx.strokeStyle="rgba(255,255,255,.07)";
+ ctx.lineWidth=1;
+
+ for(let i=0;i<5;i++){
+  let y=20+i*(h-40)/4;
+  ctx.beginPath();
+  ctx.moveTo(0,y);
+  ctx.lineTo(w,y);
+  ctx.stroke();
+ }
+
+ if(history.length<2)return;
+
+ ctx.beginPath();
+
+ history.forEach((v,i)=>{
+  let x=i*(w/(MAX_HISTORY-1));
+  let y=h-20-(v/100)*(h-40);
+
+  if(i===0)ctx.moveTo(x,y);
+  else ctx.lineTo(x,y);
+ });
+
+ ctx.strokeStyle="#55d6ff";
+ ctx.lineWidth=3;
+ ctx.stroke();
+
+ let last=history[history.length-1];
+ let lx=(history.length-1)*(w/(MAX_HISTORY-1));
+ let ly=h-20-(last/100)*(h-40);
+
+ ctx.beginPath();
+ ctx.arc(lx,ly,5,0,Math.PI*2);
+ ctx.fillStyle="#55d6ff";
+ ctx.fill();
+
+ ctx.font="11px -apple-system,BlinkMacSystemFont,sans-serif";
+ ctx.fillStyle="rgba(255,255,255,.45)";
+ ctx.fillText("100",5,17);
+ ctx.fillText("50",5,h/2);
+ ctx.fillText("0",5,h-8);
+}
+
+/* -------------------------
+   MONITORING
+------------------------- */
+
+function startMonitoring(){
+
+ monitoring=!monitoring;
+
+ if(monitoring){
+  document.getElementById("startBtn").textContent=tr("stop");
+  addEvent("🟢",tr("startEvent"));
+
+  if(timer)clearInterval(timer);
+  timer=setInterval(simulate,900);
+ }else{
+  document.getElementById("startBtn").textContent=tr("start");
+  addEvent("⏹️",tr("stopEvent"));
+
+  if(timer){
+   clearInterval(timer);
+   timer=null;
+  }
+ }
+}
+
+/* -------------------------
+   SCENARIOS
+------------------------- */
+
+function runScenario(type){
+
+ scenario=type;
+
+ if(type==="normal"){
+  addEvent("🟢",tr("normalEvent"));
+ }
+
+ else if(type==="heat"){
+  addEvent("🌡️",tr("scenarioEvent")+" — "+tr("heat"));
+ }
+
+ else if(type==="air"){
+  addEvent("💨",tr("scenarioEvent")+" — "+tr("airS"));
+ }
+
+ else if(type==="compound"){
+  addEvent("🔴",tr("scenarioEvent")+" — "+tr("compound"));
+ }
+
+ if(!monitoring){
+  monitoring=true;
+  document.getElementById("startBtn").textContent=tr("stop");
+
+  if(timer)clearInterval(timer);
+  timer=setInterval(simulate,900);
+ }
+
+ for(let i=0;i<3;i++)simulate();
+}
+
+/* -------------------------
+   RESET
+------------------------- */
+
+function resetSystem(){
+
+ scenario="normal";
+
+ data={
+  temp:24,
+  air:82,
+  noise:31,
+  crowd:18
+ };
+
+ history=[];
+ updateUI(8);
+ drawChart();
+
+ addEvent("↺",tr("normalEvent"));
+}
+
+/* -------------------------
+   EVENTS
+------------------------- */
+
+let events=[];
+
+function addEvent(icon,text){
+
+ let time=new Date().toLocaleTimeString(
+  lang==="ar"?"ar-SA":"en-US",
+  {hour:"2-digit",minute:"2-digit",second:"2-digit"}
+ );
+
+ events.unshift({icon,text,time});
+
+ if(events.length>6)events.pop();
+
+ renderEvents();
+}
+
+function renderEvents(){
+
+ let el=document.getElementById("events");
+
+ if(events.length===0){
+  el.innerHTML=
+   `<div class="event">
+    <div class="eventIcon">📡</div>
+    <div>${tr("normalEvent")}<small>—</small></div>
+   </div>`;
+  return;
+ }
+
+ el.innerHTML=events.map(e=>`
+  <div class="event">
+   <div class="eventIcon">${e.icon}</div>
+   <div>${e.text}<small>${e.time}</small></div>
+  </div>
+ `).join("");
+}
+
+/* -------------------------
+   MODAL
+------------------------- */
+
+function startAnalysis(){
+
+ document.getElementById("modal").style.display="grid";
+
+ document.getElementById("modalTitle").textContent=tr("systemAnalysis");
+
+ document.getElementById("modalContent").innerHTML=`
+  <div class="radar"></div>
+  <p style="color:#91a2b8">${tr("analyzing")}</p>
+  <div class="progress"><i id="modalProgress"></i></div>
+ `;
+
+ let p=0;
+
+ let interval=setInterval(()=>{
+  p+=5;
+
+  let bar=document.getElementById("modalProgress");
+  if(bar)bar.style.width=p+"%";
+
+  if(p>=100){
+   clearInterval(interval);
+
+   let risk=calculateRisk();
+
+   document.getElementById("modalContent").innerHTML=`
+    <h3>${tr("result")}</h3>
+    <div style="font-size:55px;font-weight:900;margin:12px 0">
+      ${risk}<span style="font-size:20px;color:#91a2b8"> / 100</span>
+    </div>
+    <p style="color:#ff9f43">${risk>35?tr("riskDetected"):tr("noDanger")}</p>
+    <p style="color:#91a2b8;line-height:1.8">${tr("explanation")}</p>
+    <div class="alert">
+      <strong>${tr("confidence")}</strong>
+      <p>${Math.max(70,Math.round(94-Math.abs(50-risk)/3))}% — experimental simulation</p>
+    </div>
+   `;
+  }
+ },70);
+}
+
+function closeModal(){
+ document.getElementById("modal").style.display="none";
+}
+
+/* -------------------------
+   INITIALIZATION
+------------------------- */
+
+addEvent("🟢",tr("normalEvent"));
+
+history=[8,9,8,10,9,8,9,8];
+
+updateUI(8);
+drawChart();
+
+window.addEventListener("resize",drawChart);
+
+/* Open detailed analysis by tapping risk number */
+document.getElementById("riskNumber").style.cursor="pointer";
+document.getElementById("riskNumber").onclick=startAnalysis;
+
+</script>
+
+</body>
+</html>
